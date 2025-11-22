@@ -1,24 +1,22 @@
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
+# Node.js dependencies
+node_modules/
 
-node_modules
-dist
-dist-ssr
-*.local
-
-.vscode/*
-!.vscode/extensions.json
-.idea
-.DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
+# Environment variables
 .env
-.vercel
+
+# Vercel settings (if applicable)
+.vercel/
+
+# TypeScript build output
+dist/
+
+# TypeScript configuration files (if you don't want them tracked)
+tsconfig.json
+tsconfig.tsbuildinfo
+
+# Miscellaneous files to hide
+*.log
+*.tmp
+
+# Any other custom files you want to hide
+shb/

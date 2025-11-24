@@ -7,6 +7,8 @@ import { validatePdfFile } from "../utils/validateFile.js";
 import { isDeadlinePassed } from "../utils/validateDeadline.js";
 import { uploadToCloudinary } from "../services/cloudinaryService.js";
 import { TextDecoder } from "util";
+import { CloudinaryUploadResponse } from "../types/cloudinaryService.js";
+
 
 // 🔥 Fix mojibake from multer
 const decodeFilename = (name: string) => {
@@ -53,7 +55,7 @@ export const submitAssignment = async (req: AuthRequest, res: Response) => {
     // -----------------------------------------
     // 🔥 Cloudinary Upload
     // -----------------------------------------
-    const cloudinaryResult = await uploadToCloudinary(file);
+    const cloudinaryResult = await uploadToCloudinary(file) as CloudinaryUploadResponse;
 
     // -----------------------------------------
     // 🔥 Save Submission (No Email)

@@ -20,3 +20,4 @@ tsconfig.tsbuildinfo
 
 # Any other custom files you want to hide
 shb/
+.vercel

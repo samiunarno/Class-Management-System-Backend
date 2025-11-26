@@ -4,8 +4,8 @@ export interface ISubmission extends Document {
     studentId: Schema.Types.ObjectId;
     filename: string;
     emailMessageId?: string;
-    dropboxLink?: string;
-    dropboxDirectLink?: string;
+    cloudinaryUrl?: string;
+    cloudinaryPublicId?: string;
     uploadedAt: Date;
 }
 declare const _default: mongoose.Model<ISubmission, {}, {}, {}, mongoose.Document<unknown, {}, ISubmission, {}, {}> & ISubmission & Required<{

@@ -3,12 +3,12 @@ import cors from "cors";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import dotenv from "dotenv";
+dotenv.config();
 import { connectDB } from "./config/db.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import assignmentRoutes from "./routes/assignmentRoutes.js";
-dotenv.config();
 const app = express();
 // Connect to MongoDB
 connectDB();
@@ -39,6 +39,20 @@ app.use("/api", limiter);
 // Body parsing middleware
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
+// Add this route BEFORE your main routes
+app.get('/api/debug/cloudinary', (req, res) => {
+    const config = {
+        cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+        api_key: process.env.CLOUDINARY_API_KEY,
+        api_secret: process.env.CLOUDINARY_API_SECRET ? '***' + process.env.CLOUDINARY_API_SECRET.slice(-4) : 'Missing'
+    };
+    console.log('🔍 Cloudinary Config Check:', config);
+    res.json({
+        status: 'Debug Route',
+        cloudinary: config,
+        node_env: process.env.NODE_ENV
+    });
+});
 // Health check route
 app.get("/api", (req, res) => {
     res.json({

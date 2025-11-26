@@ -9,6 +9,7 @@ import { errorHandler } from "./middleware/errorHandler.js";
 import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import assignmentRoutes from "./routes/assignmentRoutes.js";
+import { v2 as cloudinary } from 'cloudinary';
 
 dotenv.config();
 
@@ -65,6 +66,22 @@ app.use("/api/assignments", assignmentRoutes);
 
 // Error handling middleware
 app.use(errorHandler);
+
+// Temporary debug route add korun
+app.get('/api/debug/cloudinary', (req, res) => {
+  const config = {
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET ? '***' + process.env.CLOUDINARY_API_SECRET.slice(-4) : 'Missing'
+  };
+  
+  console.log('🔍 Cloudinary Config Check:', config);
+  res.json({ 
+    status: 'Debug Route',
+    cloudinary: config,
+    node_env: process.env.NODE_ENV
+  });
+});
 
 // 404 handler
 app.use("*", (req, res) => {

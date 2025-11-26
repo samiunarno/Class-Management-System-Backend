@@ -6,9 +6,12 @@ const assignmentSchema = Joi.object({
     description: Joi.string().min(10).required(),
     deadline: Joi.date().iso().required(),
 });
-// Create a new assignment
+// Create a new assignment (only admin and monitor can create)
 export const createAssignment = async (req, res) => {
     try {
+        if (req.user?.role !== 'admin' && req.user?.role !== 'monitor') {
+            return res.status(403).json({ message: 'Not authorized to create an assignment' });
+        }
         const { error, value } = assignmentSchema.validate(req.body);
         if (error) {
             console.log('Validation error:', error.details);
@@ -76,9 +79,12 @@ export const getAssignmentById = async (req, res) => {
         res.status(500).json({ message: 'Server error' });
     }
 };
-// Update an assignment
+// Update an assignment (only admin and monitor can update)
 export const updateAssignment = async (req, res) => {
     try {
+        if (req.user?.role !== 'admin' && req.user?.role !== 'monitor') {
+            return res.status(403).json({ message: 'Not authorized to update this assignment' });
+        }
         const { error, value } = assignmentSchema.validate(req.body);
         if (error) {
             console.log('Validation error:', error.details);
@@ -89,10 +95,6 @@ export const updateAssignment = async (req, res) => {
         if (!assignment) {
             return res.status(404).json({ message: 'Assignment not found' });
         }
-        // Check if user is admin or the creator
-        if (req.user?.role !== 'admin' && assignment.createdBy.toString() !== req.user?._id.toString()) {
-            return res.status(403).json({ message: 'Not authorized to update this assignment' });
-        }
         const updatedAssignment = await Assignment.findByIdAndUpdate(req.params.id, { title, description, deadline }, { new: true }).populate('createdBy', 'name email');
         res.json(updatedAssignment);
     }
@@ -101,17 +103,16 @@ export const updateAssignment = async (req, res) => {
         res.status(500).json({ message: 'Server error' });
     }
 };
-// Delete an assignment
+// Delete an assignment (only admin and monitor can delete)
 export const deleteAssignment = async (req, res) => {
     try {
+        if (req.user?.role !== 'admin' && req.user?.role !== 'monitor') {
+            return res.status(403).json({ message: 'Not authorized to delete this assignment' });
+        }
         // Check if the assignment exists
         const assignment = await Assignment.findById(req.params.id);
         if (!assignment) {
             return res.status(404).json({ message: 'Assignment not found' });
-        }
-        // Check if user is admin or the creator of the assignment
-        if (req.user?.role !== 'monitor' && assignment.createdBy.toString() !== req.user?._id.toString()) {
-            return res.status(403).json({ message: 'Not authorized to delete this assignment' });
         }
         // Delete the assignment
         const deletedAssignment = await Assignment.findByIdAndDelete(req.params.id);
